@@ -1,0 +1,122 @@
+ C Y F L M I V T S P A G D E Q H N K R W 6.757812 
+ 20:12:32 7700  tries
+ W R K N H Q E D G A P S T I V M L F Y C 6.757812 
+ 20:31:42 10100  tries
+ C Y F L M V I T S P A G D E Q H N K R W 6.757812 
+ 21:35:58 18300  tries
+ C Y F L M V I T S P A G D E Q H N K R W 6.757812 
+ 22:59:15 28800  tries
+ W R K N H Q E D G A P S T I V M L F Y C 6.757812 
+ 00:10:36 38000  tries
+ W R K N H Q E D G S P A T V I M L F Y C 6.757812 
+ 01:21:43 47000  tries
+ W R K N H Q E D G S P A T V I M L F Y C 6.757812 
+ 01:45:43 50100  tries
+ W R K N H Q E D G S P A T I V M L F Y C 6.757812 
+ 01:51:45 50800  tries
+ C Y F L M V I T A P S G D E Q H N K R W 6.757812 
+ 02:09:39 53100  tries
+ W R K N H Q E D G S P A T V I M L F Y C 6.757812 
+ 02:58:07 59200  tries
+ W R K N H Q E D G A P S T V I M L F Y C 6.757812 
+ 03:49:50 65800  tries
+ C Y F L M I V T S P A G D E Q H N K R W 6.757812 
+ 04:04:05 67600  tries
+ C Y F L M V I T S P A G D E Q H N K R W 6.757812 
+ 04:41:46 72400  tries
+ W R K N H Q E D G S P A T I V M L F Y C 6.757812 
+ 04:46:19 73000  tries
+ C Y F L M V I T A P S G D E Q H N K R W 6.757812 
+ 05:34:24 79100  tries
+ W R K N H Q E D G A P S T V I M L F Y C 6.757812 
+ 06:18:42 84800  tries
+ W R K N H Q E D G A P S T I V M L F Y C 6.757812 
+ 06:30:38 86300  tries
+ W R K N H Q E D G A P S T I V M L F Y C 6.757812 
+ 08:47:16 103800  tries
+ C Y F L M I V T A P S G D E Q H N K R W 6.757812 
+ 09:42:42 110800  tries
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Hi score::
+
+ W R K N H Q E D G A P S C Y F L M I V T 39 
+ 12:22:27 400  tries
+ W R K N H Q E D G A P S C Y F L M I V T 39 
+ 12:36:55 800  tries
+ W R K N H Q E D G A P S C Y F L M I V T 39 
+ 12:45:14 1000  tries
+ P A T I V M L F Y C S G D E Q H N K R W 39 
+ 12:52:21 1200  tries
+ P A T V I M L F Y C S G D E Q H N K R W 39 
+ 12:55:56 1300  tries
+ W R K N H Q E D G A P S C Y F L M V I T 39 
+ 13:04:32 1500  tries
+ W R K N H Q E D G S C Y F L M I V T A P 39 
+ 13:08:03 1600  tries
+ P A T I V M L F Y W R K N H Q E D G S C 39 
+ 13:12:17 1700  tries
+ C S P A G D E Q H N K R W Y F L M V I T 39 
+ 13:28:14 2100  tries
+ G D E Q H N K R W Y F L M V I T A P S C 39 
+ 13:32:43 2200  tries
+ P S C Y F L M I V T A G D E Q H N K R W 39 
+ 13:50:46 2700  tries
+ C S P A T V I M L F Y W R K N H Q E D G 39 
+
+ T V I M L F Y W R K N H Q E D G A P S C 39 
+ 13:54:35 2800  tries
+ C S P A G D E Q H N K R W Y F L M V I T 39 
+
+ C S T P A G D E Q H N K R W Y F L M V I 39 
+
+ C S T P A G D E Q H N K R W Y F L M V I 39 
+ 14:02:10 3000  tries
+ P A T I V M L F Y W R K N H Q E D G S C 39 
+ 14:27:37 3700  tries
+ P S C Y F L M V I T A G D E Q H N K R W 39 
+ 14:35:36 3900  tries
+ P A T I V M L F Y C S G D E Q H N K R W 39 
+ 14:39:42 4000  tries
+ W R K N H Q E D G A P S C Y F L M V I T 39 
+ 14:54:54 4400  tries
+ C S G D E Q H N K R W Y F L M I V T A P 39 
+ 15:10:58 4800  tries
+ W R K N H Q E D G A P T S C Y F L M I V 39 
+ 15:22:31 5100  tries
+ T I V M L F Y W R K N H Q E D G A P S C 39 
+ 15:26:25 5200  tries
+ P S C Y F L M I V T A G D E Q H N K R W 39 
+ 15:37:54 5500  tries
+ C S G D E Q H N K R W Y F L M I V T A P 39 
+ 15:52:44 5900  tries
+ T V I M L F Y C S P A G D E Q H N K R W 39 
+ 16:08:16 6300  tries
+ V I M L F Y W R K N H Q E D G A T P S C 39 
+
+ C S P A G D E Q H N K R W Y F L M V I T 39 
+ 16:15:42 6500  tries
+ T V I M L F Y C S P A G D E Q H N K R W 39
+
+===========================================================
+BLOSUM62::
+ C A G S T V I L M F W Y H N D E Q R K P 21 
+ 23:21:57 16800  tries
+ P K R Q E D N H Y F W M L I V T S G A C 21 
+ 02:42:47 26000  tries
+ P K R Q E D N H Y F W M L I V T S G A C 21 
+ 02:49:42 26300  tries
+ C A G S T V I L M F W Y H N D E Q R K P 21 
+ 03:28:25 28100  tries
+ P K R Q E D N H Y W F M L I V T S G A C 21 
+ 03:52:48 29200  tries
+ P K R Q E D N H Y F W M L I V T S G A C 21 
+ 04:19:40 30400  tries
+ P K R Q E D N H Y W F M L I V T S G A C 21 
+ 06:31:39 36400  tries
+ C A G S T V I L M F W Y H N D E Q R K P 21 
+ 07:37:01 39400  tries
+ P K R Q E D N H Y F W M L I V T S G A C 21 
+ 09:45:44 45300  tries
+ P K R Q E D N H Y F W M L I V T S G A C 21
+
+
