@@ -10,9 +10,23 @@ upsidedown2 <- function(bp){
    )
    
 }
+
+expandPair <- function(pair){
+   # "G>A" becomes "G/C>A/T"
+   paste0(
+      substr(pair,1,1),
+      "/",
+      basePair(substr(pair,1,1)),
+      " > ",
+      substr(pair,3,3),
+      "/",
+      basePair(substr(pair,3,3))
+   )
+}
+
 humanGC <- 0.41
 
-denovo.db.variants.v.1.2 <- read.delim("Z:/programming/R/ENU analysis/denovo-db/denovo-db.variants.v.1.2.tsv", skip=1,header=TRUE)
+denovo.db.variants.v.1.2 <- read.delim(paste0(workPath,"denovo-db/denovo-db.variants.v.1.2.tsv"), skip=1,header=TRUE)
 denovoSNPs <-head(sort(table(denovo.db.variants.v.1.2$Variant),decreasing=TRUE),n=12)
 
 i<-1
@@ -21,10 +35,13 @@ while(i <length(denovoSNPs)){
    if(!is.na(samePair)){
       denovoSNPs[i] <- denovoSNPs[i]+denovoSNPs[samePair]
       denovoSNPs <- denovoSNPs[-samePair]
+      
       i<-0
    }
    i<-i+1
 }
+
+
 
 gcnormal <- rep(NA,6)
 names(gcnormal)<-names(denovoSNPs)
@@ -33,7 +50,15 @@ for( i in 1:length(denovoSNPs)){
    if(grepl("C>|G>",names(denovoSNPs[i]))){gcnormal[i] <- (denovoSNPs[i]/(humanGC))}
 }
 
-  
+for( i in 1:length(denovoSNPs)){
+   if(sum(expandPair(names(denovoSNPs)[i]) == mutRows)){
+      names(denovoSNPs)[i] <- expandPair(names(denovoSNPs)[i])
+   }else{
+      names(denovoSNPs)[i] <- upsidedown(expandPair(names(denovoSNPs)[i]))
+   }
+} 
+names(gcnormal)<-names(denovoSNPs)
+
    
 denovoSNPpercents <- gcnormal/sum(gcnormal)
 
@@ -82,6 +107,25 @@ AAchangePaths<-as.matrix(AAchanges[1:20,1:20])
 class(AAchangePaths)<-"numeric"
 AAchanges[!is.na(AAchanges)]<-0
 
+AAchangePaths<-AAchangePaths[AAbyparam,AAbyparam]
+heatmap.2( AAchangePaths,
+           col = CP,
+           cellnote = AAchangePaths,
+           notecol="black",
+           trace = "none", 
+           symbreaks = min(diff, na.rm=TRUE),
+           na.color="gray55",
+           Rowv = FALSE,
+           Colv = FALSE,
+           dendrogram = "none",
+           offsetRow = -45,
+           offsetCol = -53,
+           srtCol = 0,
+           main="codon change posibilties"
+)
+
+
+codons <-  apply(expand.grid(nt,nt,nt),1,function(x) paste0(x[3],x[2],x[1], collapse=""))
 
 
 # successCount<-0
@@ -116,14 +160,14 @@ AAchanges[!is.na(AAchanges)]<-0
 
 CCnums<-matrix(0,dim(CodonChanges)[1],dim(CodonChanges)[2]+1)
 
-for(i in 0:((64*15000)-1)){
+for(i in 0:((64*150000)-1)){
    start<-end<-codons[1+i-floor(i/64)*64]
    
    position<-sample(1:3,size=1)
    base2change <- substr(start,position,position)
    change<-sample(names(denovoSNPpercents),size=1,prob=denovoSNPpercents, replace=TRUE)
    changeFrom <- substring(change,1,1)
-   changeTo<-substring(change,3,3)
+   changeTo<-substring(change,7,7)
    if(base2change == changeFrom ){
       substr(end,position,position)<-changeTo
       r<-which(rownames(CodonChanges)==start)
@@ -197,6 +241,47 @@ axis(2, at=AAandParameter$param,labels=AAandParameter$AA,
 axis(3, at=AAandParameter$param,labels=AAandParameter$AA,
      las=1, tck=-.01)
 
+dsadasda <- AAchanges_numeric[1:20,1:20]/sum(AAchanges_numeric[1:20,1:20],na.rm=T)
+
+heatmap.2( dsadasda,
+           col = CP,
+           cellnote = round(100*dsadasda,2),
+           notecol="black",
+           trace = "none", 
+           symbreaks = min(diff, na.rm=TRUE),
+           na.color="gray55",
+           Rowv = FALSE,
+           Colv = FALSE,
+           dendrogram = "none",
+           offsetRow = -45,
+           offsetCol = -53,
+           srtCol = 0,
+           main="Amino Acid change freq"
+)
+
+
+heatmap.2( dsadasda/AAchangePaths,
+           col = CP,
+           cellnote = round(100*dsadasda/AAchangePaths,2),
+           notecol="black",
+           trace = "none", 
+           symbreaks = min(diff, na.rm=TRUE),
+           na.color="gray55",
+           Rowv = FALSE,
+           Colv = FALSE,
+           dendrogram = "none",
+           offsetRow = -45,
+           offsetCol = -53,
+           srtCol = 0,
+           main=""
+)
+
+
+
+dsadasda/AAchangePaths
+
+
+
 ## Missense
 AAmissense_numeric<-AAchanges_numeric[1:20,1:20]
 diag(AAmissense_numeric)<-NA
@@ -219,25 +304,63 @@ axis(3, at=AAandParameter$param,labels=AAandParameter$AA,
 
 
 
+binBy = 0.5
+
+AAandParameter$paramRound <- round(AAandParameter$param/binBy)*binBy
+deltaASA<-matrix(nrow=20,ncol=20,rep(AAandParameter$paramRound,each=20))-matrix(nrow=20,ncol=20,rep(AAandParameter$paramRound,20))
+
+## histo of changepaths by deltaPI
 
 
-deltaASA<-matrix(nrow=20,ncol=20,rep(AAandParameter$param,each=20))-matrix(nrow=20,ncol=20,rep(AAandParameter$param,20))
+deltaPI <- seq(round(min(deltaASA)/binBy)*binBy,round(max(deltaASA)/binBy)*binBy,by=binBy)
+pathCountsbyPI<-data.frame(deltaPI,"pathCount" = NA,"obsCount"=NA,"Obs_path"=NA)
+for (i in 1:length(deltaPI)){
+   pathCountsbyPI$pathCount[deltaPI==deltaPI[i]]<-mean(AAchangePaths[which((round(deltaASA/binBy)*binBy)== deltaPI[i])],na.rm = TRUE)
+   pathCountsbyPI$obsCount[deltaPI==deltaPI[i]]<-sum(AAchanges_numeric[which((round(deltaASA/binBy)*binBy)== deltaPI[i])],na.rm = TRUE)
+}
+pathCountsbyPI$Obs_path <- pathCountsbyPI$obsCount/pathCountsbyPI$pathCount
+   
+# plot(pathCountsbyPI)
+# pathCountsbyPI
+
 
 diag(AAchangePaths)<-NA
 obsCountTab <- table(rep(as.numeric(deltaASA)[!is.na(AAmissense_numeric)],as.numeric(AAmissense_numeric)[!is.na(AAmissense_numeric)]))
 
 codonCountTab <- table(rep(as.numeric(deltaASA)[!is.na(AAmissense_numeric)],as.numeric(AAchangePaths)[!is.na(AAchangePaths)]))
 
-plot(obsCountTab)
-plot(codonCountTab)
+# plot(obsCountTab)
+# plot(codonCountTab)
 
 log2diff <- log2((obsCountTab/sum(obsCountTab))/(codonCountTab/sum(codonCountTab)))
-plot(log2diff,ylim=1.1*range(log2diff))
+# plot(log2diff,ylim=1.1*range(log2diff))
+# abline(h=1)
 log2diffDF<-data.frame("ASA"=as.numeric(names(log2diff)),"ratio"=as.numeric(log2diff))
-lw1<-loess(ratio~ASA,log2diffDF,span=0.75)
+# lw1<-loess(ratio~ASA,log2diffDF)
 
-j <- order(log2diffDF$ASA)
-lines(log2diffDF$ASA[j],lw1$fitted[j],col="red",lwd=3)
+# j <- order(log2diffDF$ASA)
+
+# log2diffDF$loess[j]<-lw1$fitted[j]
+
+# lines(log2diffDF$ASA[j],log2diffDF$loess[j],col="red",lwd=3)
+
+ggplot(pathCountsbyPI, aes(x=deltaPI,y=pathCount)) + 
+   geom_bar(stat = "identity",width=0.7*binBy, fill="#361607") +
+   theme_minimal() +
+   xlab("change in hydrophobicity (ΔΠ)")+
+   ylab("# mutational paths")
+
+
+
+
+
+
+
+ggplot(log2diffDF, aes(x=ASA,y=ratio)) + 
+   geom_bar(stat = "identity",width=0.7*binBy, fill="#361607") +
+   theme_minimal() +
+   xlab("change in hydrophobicity (ΔΠ)")
+   # geom_smooth(method = "loess",se=FALSE,color="red")
 
 
 rep(as.numeric(deltaASA)[!is.na(AAchanges_numeric)],as.numeric(AAchanges_numeric)[!is.na(AAchanges_numeric)])

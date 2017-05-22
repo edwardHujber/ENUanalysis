@@ -31,18 +31,19 @@ basePair <- function(p){
 
 
 
-# workPath <- "~/Lab/R/ENU analysis/"
-workPath <- "Z:/programming/R/ENU analysis/"
+workPath <- "~/Lab/R/ENU analysis/"
+# workPath <- "Z:/programming/R/ENU analysis/"
 
 
 CDS<-read.fasta(paste0(workPath,"Caenorhabditis_elegans.WBcel235.cds.all.fa"))
 codonCounts<-colSums(do.call(rbind,lapply(CDS,uco)))
 codonUsage<-codonCounts/sum(codonCounts)
+codonUsage[order(codonUsage,decreasing = T)]
 
 
 cutoff <- 2 ## varient is called parental is it shows up in 'cutoff' or more strains 
 WS220 <- read.fasta(paste0(workPath,"WS220.fasta"))
-GCbias<-0.354396697367839796921629158532596193253993988037109375 ## full precision of expression below.
+wormGCbias<-0.354396697367839796921629158532596193253993988037109375 ## full precision of expression below.
 # GCbias<- 
 #   Reduce("+",lapply(WS220, function(genome){
 #     print(getName(genome))
@@ -50,7 +51,7 @@ GCbias<-0.354396697367839796921629158532596193253993988037109375 ## full precisi
 #   })) / sum(sapply(WS220,length))  ## number of occurences of G or C divided by total nts
 
 ##### various AA stuff #####
-AA_ASA <- read.csv("Z:/programming/R/ENU analysis/AA_ASA.csv", comment.char="#")
+AA_ASA <- read.csv(paste0(workPath,"/AA_ASA.csv"), comment.char="#")
 AA_ASA$random <- rnorm(n = nrow(AA_ASA))
 
 hydrophobic <- c("A","I","L","V")
@@ -97,22 +98,7 @@ changeRows <- changeRows[ order(changeRows[,1]),]
 dropRows <- which(changeRows[,1]==changeRows[,3])
 mutRows <- discardDups(apply(changeRows[-dropRows,],1,function(x) paste0(x,collapse="")))
 
-codons <-  apply(expand.grid(nt,nt,nt),1,function(x) paste0(x[3],x[2],x[1], collapse=""))
-posChanges<-apply(expand.grid(c("_I","_V","_V"),1:3,"P"),1,function(x) paste0(x[3],x[2],x[1], collapse=""))
-first<-FALSE
-CodonChanges <-data.frame(t(sapply(codons,function(x,y){
-   sapply(y,function(z,x){
-      NTatPos <-substr(x,substr(z,2,2),substr(z,2,2))
-      switch(substr(z,4,4),
-             I={if(NTatPos %in% purines){swapFor<-purines[-which(purines==NTatPos)]}
-                if(NTatPos %in% pyrimidines){swapFor<-pyrimidines[-which(pyrimidines==NTatPos)]}},
-             
-             V={if(NTatPos %in% purines){swapFor<-pyrimidines[1+first];first<<-!first}
-                if(NTatPos %in% pyrimidines){swapFor<-purines[1+first];first<<-!first}})
-      substr(x,substr(z,2,2),substr(z,2,2)) <- swapFor
-      return(x)
-   },x)
-},posChanges)))
+
 
 VARS2KEEP <- ls()
 

@@ -1,4 +1,7 @@
 library("abind")
+library("ggplot2")
+library("RColorBrewer")
+
 #### 'dat' should already have been defined by one of the import scripts. 
 SEM<-function(x,na.rm=FALSE){
    if(na.rm){x<-x[!is.na(x)]}
@@ -34,7 +37,20 @@ repFunctionOverStrains<-function(DAT,FUN){
 ## count variants, transitions, transversion
 codingOnly <- FALSE
 oneLinePerVar <- TRUE
-useThisDat<-dat
+
+datList <- c("f1EMS","f1ENU","denovo")
+genomeList <- c("w","w","h")
+
+for(k in 1:length(datList)){
+   
+
+
+useThisDat<-get(datList[k])
+GCbias<-switch(genomeList[k],
+   w = wormGCbias,
+   h = humanGC)
+      
+
 
 if(codingOnly){useThisDat <- useThisDat[which(nchar(as.character(useThisDat$Old_codon.New_codon))!=0),]}
 if(oneLinePerVar){
@@ -45,10 +61,6 @@ if(oneLinePerVar){
    
 }
 
-paramCut <- 1
-
-while(paramCut<15) {
-useThisDat <- useThisDat[which(useThisDat$altCount >= paramCut),]
 
 GAper<-repFunctionOverStrains(useThisDat,function(x){
 
@@ -82,7 +94,7 @@ transversions <- varTypes[which((is.na(match(varTypes$Ref,purines))==FALSE &
 
 
 ## Move varTypes to the cleaner mutTypes
-mutType <- data.frame("mutType"=mutRows[c(6,2,4,5,1,3)])
+mutType <- data.frame("mutType"=mutRows[c(6,4,5,1,2,3)])
 mutType$Count <- apply(mutType,1,function(x)  
   sum(as.numeric(varTypes$Count[which(  (varTypes$Ref==substring(x,1,1)&varTypes$Var==substring(x,7,7)) | (varTypes$Ref==substring(x,3,3)&varTypes$Var==substring(x,9,9))   )]))
 )
@@ -95,25 +107,30 @@ mutType$PercentGCnormal <- apply(mutType,1,function(x) as.numeric(x['countGCnorm
  return(mutType)
 
 })
-enu2rowmeans <- rowMeans(matrix(nrow=dim(GAper[,5,])[1],ncol=dim(GAper[,5,])[2],as.numeric(GAper[,5,])))
 
 
 
-# barPlotwSEM(GAper)
-# rowMeans(tab)
-# # matx[1,altCountCutoff+1]<-round(mutType$PercentGCnormal[which(mutType$mutType=="C/G > T/A")],3)*100
-# print(altCountCutoff)
-# }
-# plot(x=0:maxAlt,y=matx)
+mutSprectrum <- rowMeans(matrix(nrow=dim(GAper[,5,])[1],ncol=dim(GAper[,5,])[2],as.numeric(GAper[,5,])))
 
-if(paramCut == 1){
-   RMs <- data.frame("cutoff"=paramCut,"mut"=GAper[,1,1], "Percent"=enu2rowmeans)
+
+if (datList[k] == "denovo"){
+   denovoSNPpercents
+   RMs <- rbind(RMs,data.frame("Mutagen"=datList[k],"Mutation"=names(denovoSNPpercents), "Percent"=denovoSNPpercents))
+   
+}
+
+
+
+if(k == 1){
+   RMs <- data.frame("Mutagen"=datList[k],"Mutation"=GAper[,1,1], "Percent"=mutSprectrum)
 }else{
-   RMs <- rbind(RMs, data.frame("cutoff"=paramCut,"mut"=GAper[,1,1], "Percent"=enu2rowmeans))
+   RMs <- rbind(RMs,data.frame("Mutagen"=datList[k],"Mutation"=GAper[,1,1], "Percent"=mutSprectrum))
 }
-paramCut<- paramCut+1
 }
-ggplot(RMs, aes(x=cutoff,y=Percent,group=mut,fill=mut)) + geom_area(position="stack")
+
+ggplot(RMs, aes(Mutagen, Percent, fill=Mutation)) + 
+   geom_bar(position="stack",stat="identity", width=0.5) +
+   scale_fill_brewer(palette="Set3")
 
 
 rm(list=setdiff(ls(), c("mutType",VARS2KEEP))) 

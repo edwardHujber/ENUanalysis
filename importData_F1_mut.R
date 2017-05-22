@@ -99,15 +99,15 @@ filtereddat <- with(fulldat, fulldat[-which(
    altcount < 2.5
 ),])
 
-
+print(length(unique(filtereddat$CPRC))/length(unique(fulldat$CPRC)))
 ## get things into uniform structure, with only the necessary columns
 dat<-with(filtereddat,data.frame("altCount"=altcount,"DP"=DP,"HR"=HR,"VAF"=VAF, "ID"=wormID,"CPRC"=CPRC,"chr"=CHROM,"pos"=POS,"wt_dna"=REF,"mut_dna"=ALT, "Old_codon.New_codon"=EFF_Codon_Change, "old_AA.new_AA"=AAchange))
 
-altCountCutoff <- 8 ## higher = more conservative
-HRcutoff<- 3.5 # lower = more conservative
-
-
-dat<-dat[which( dat$altCount>altCountCutoff & dat$HR<HRcutoff ),]
+# altCountCutoff <- 8 ## higher = more conservative
+# HRcutoff<- 3.5 # lower = more conservative
+# 
+# 
+# dat<-dat[which( dat$altCount>altCountCutoff & dat$HR<HRcutoff ),]
 rm(list=setdiff(ls(), c("dat",VARS2KEEP))) 
 gc()
 

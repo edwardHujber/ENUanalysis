@@ -59,7 +59,23 @@ barPlotwSEM(codonPosTablePct,ylab="Percent")
 
 
 ######## codon changes #########
+codons <-  apply(expand.grid(nt,nt,nt),1,function(x) paste0(x[3],x[2],x[1], collapse=""))
+posChanges<-apply(expand.grid(c("_I","_V","_V"),1:3,"P"),1,function(x) paste0(x[3],x[2],x[1], collapse=""))
 
+first<-FALSE
+CodonChanges <-data.frame(t(sapply(codons,function(x,y){
+   sapply(y,function(z,x){
+      NTatPos <-substr(x,substr(z,2,2),substr(z,2,2))
+      switch(substr(z,4,4),
+            I={if(NTatPos %in% purines){swapFor<-purines[-which(purines==NTatPos)]}
+               if(NTatPos %in% pyrimidines){swapFor<-pyrimidines[-which(pyrimidines==NTatPos)]}},
+            
+            V={if(NTatPos %in% purines){swapFor<-pyrimidines[1+first];first<<-!first}
+               if(NTatPos %in% pyrimidines){swapFor<-purines[1+first];first<<-!first}})
+      substr(x,substr(z,2,2),substr(z,2,2)) <- swapFor
+      return(x)
+   },x)
+},posChanges)))
 
 OldNewCodon <-as.character(dat$Old_codon.New_codon[which(grepl("/",dat$Old_codon.New_codon))])
 if(length(which(nchar(OldNewCodon)!=7)!=0)){OldNewCodon<-OldNewCodon[-which(nchar(OldNewCodon)!=7)]}
@@ -209,11 +225,11 @@ assign(paste0("AAchangePer_",datName),changePer)
 groupByClass <- FALSE
 
 
-numerator   <-   data.matrix(CCnumsNormalizedPer_f1EMS)
-demoninator <-   data.matrix(CCnumsNormalizedPer_f1ENU)
+# numerator   <-   data.matrix(CCnumsNormalizedPer_f1EMS)
+# demoninator <-   data.matrix(CCnumsNormalizedPer_f1ENU)
 
-# numerator   <-AAchangePer_mmpEMS
-# demoninator <-AAchangePer_mmpENU
+numerator   <-AAchangePer_f1EMS
+demoninator <-AAchangePer_f1ENU
 
    
 diff<-diff1<-log(numerator/demoninator,2)
@@ -395,13 +411,13 @@ plot(1, type="n", ylim=c(0,1), xlim=c(0,20000), xlab="", ylab="")
 # points(tableExploreMean_f1EMS,pch=20,cex=0.75,col="black")
 
 
-apply(tableExplore_mmpEMS,2,lines,col="lightgreen")
+# apply(tableExplore_mmpEMS,2,lines,col="lightgreen")
 #apply(tableExplore_mmpENU,2,lines,col="lightpink")
  apply(tableExplore_f1EMS,2,lines,col="cadetblue1")
  apply(tableExplore_f1ENU,2,lines,col="gray80")
 
 
-points(tableExploreMean_mmpEMS,pch=20,cex=0.75,col="green")
+# points(tableExploreMean_mmpEMS,pch=20,cex=0.75,col="green")
 #points(tableExploreMean_mmpENU,pch=20,cex=0.75,col="red")
  points(tableExploreMean_f1EMS,pch=20,cex=0.75,col="blue")
  points(tableExploreMean_f1ENU,pch=20,cex=0.75,col="black")
